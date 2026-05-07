@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import productRoutes from './routes/products'
 import authRoutes from './routes/auth'
+import orderRoutes from './routes/orders'
 
 dotenv.config()
 
@@ -20,6 +21,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/products', productRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/orders', orderRoutes)
 
 mongoose
   .connect(MONGODB_URI)
