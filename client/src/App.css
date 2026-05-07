@@ -437,6 +437,124 @@
   font-size: 15px;
 }
 
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+}
+
+.auth-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: min(420px, calc(100% - 32px));
+  display: grid;
+  gap: 20px;
+  padding: 28px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  z-index: 201;
+}
+
+.auth-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth-modal__header h2 {
+  font-size: 20px;
+}
+
+.auth-modal__close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text-h);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.auth-modal__form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-field {
+  display: grid;
+  gap: 6px;
+}
+
+.auth-field span {
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.auth-field input {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #c9c8c2;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text-h);
+  font: inherit;
+  font-size: 15px;
+}
+
+.auth-field input:focus {
+  outline: 2px solid #1f5b7a;
+  outline-offset: 1px;
+}
+
+.auth-modal__error {
+  color: #8b1e3f;
+  font-size: 14px;
+}
+
+.auth-modal__submit {
+  min-height: 46px;
+  border: 1px solid #1f5b7a;
+  border-radius: 6px;
+  background: #1f5b7a;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.auth-modal__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth-modal__toggle {
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-modal__toggle button {
+  border: none;
+  background: none;
+  color: #1f5b7a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0;
+  text-decoration: underline;
+}
+
 .cart-overlay {
   position: fixed;
   inset: 0;
