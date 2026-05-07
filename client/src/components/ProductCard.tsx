@@ -2,6 +2,7 @@ import type { Product } from '../types/shop'
 
 type ProductCardProps = {
   product: Product
+  onViewDetails: (productId: Product['id']) => void
 }
 
 const priceFormatter = new Intl.NumberFormat('sv-SE', {
@@ -10,7 +11,7 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, onViewDetails }: ProductCardProps) {
   return (
     <article className="product-card">
       <div className="product-card__visual" aria-hidden="true">
@@ -47,6 +48,14 @@ export function ProductCard({ product }: ProductCardProps) {
           <span>{product.category}</span>
           <strong>{priceFormatter.format(product.price)}</strong>
         </div>
+
+        <button
+          type="button"
+          className="product-card__details"
+          onClick={() => onViewDetails(product.id)}
+        >
+          View details
+        </button>
       </div>
     </article>
   )

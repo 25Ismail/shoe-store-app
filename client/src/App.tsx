@@ -1,8 +1,30 @@
+import { useState } from 'react'
+import { ProductDetail } from './components/ProductDetail'
 import { ProductCard } from './components/ProductCard'
 import { products } from './data/products'
+import type { Product } from './types/shop'
 import './App.css'
 
 function App() {
+  const [selectedProductId, setSelectedProductId] = useState<Product['id'] | null>(
+    null,
+  )
+
+  const selectedProduct = products.find(
+    (product) => product.id === selectedProductId,
+  )
+
+  if (selectedProduct) {
+    return (
+      <main className="shop-page">
+        <ProductDetail
+          product={selectedProduct}
+          onBack={() => setSelectedProductId(null)}
+        />
+      </main>
+    )
+  }
+
   return (
     <main className="shop-page">
       <section className="shop-hero">
@@ -25,7 +47,11 @@ function App() {
 
         <div className="product-grid">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              onViewDetails={setSelectedProductId}
+            />
           ))}
         </div>
       </section>
