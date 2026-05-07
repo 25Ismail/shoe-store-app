@@ -1,8 +1,10 @@
-import type { Product } from '../types/shop'
+import { useState } from 'react'
+import type { Product, ShoeSize } from '../types/shop'
 
 type ProductDetailProps = {
   product: Product
   onBack: () => void
+  onAddToCart: (product: Product, size: ShoeSize) => void
 }
 
 const priceFormatter = new Intl.NumberFormat('sv-SE', {
@@ -11,7 +13,14 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function ProductDetail({ product, onBack }: ProductDetailProps) {
+export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailProps) {
+  const [selectedSize, setSelectedSize] = useState<ShoeSize | null>(null)
+
+  function handleAddToCart() {
+    if (selectedSize === null) return
+    onAddToCart(product, selectedSize)
+  }
+
   return (
     <section className="product-detail" aria-labelledby="product-detail-title">
       <button type="button" className="product-detail__back" onClick={onBack}>
@@ -40,14 +49,31 @@ export function ProductDetail({ product, onBack }: ProductDetailProps) {
               {product.availableSizes.map((size) => {
                 const stock = product.stockBySize?.[size]
                 const isSoldOut = stock === 0
+                const isSelected = selectedSize === size
 
                 return (
-                  <span key={size} aria-disabled={isSoldOut}>
+                  <button
+                    key={size}
+                    type="button"
+                    disabled={isSoldOut}
+                    aria-pressed={isSelected}
+                    className={isSelected ? 'is-selected' : undefined}
+                    onClick={() => setSelectedSize(size)}
+                  >
                     {size}
-                  </span>
+                  </button>
                 )
               })}
             </div>
+
+            <button
+              type="button"
+              className="product-detail__add-to-cart"
+              disabled={selectedSize === null}
+              onClick={handleAddToCart}
+            >
+              {selectedSize === null ? 'Select a size' : 'Add to cart'}
+            </button>
           </div>
 
           <div className="product-detail__panel">
