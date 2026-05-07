@@ -381,6 +381,62 @@
   font-weight: 800;
 }
 
+.fit-recommendation {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 6px;
+  background: #f6f3ec;
+}
+
+.fit-recommendation__summary {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.fit-recommendation__bars {
+  display: grid;
+  gap: 8px;
+}
+
+.fit-recommendation__bar-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 36px;
+  gap: 8px;
+  align-items: center;
+}
+
+.fit-recommendation__bar-label {
+  color: var(--text-h);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fit-recommendation__bar-track {
+  height: 8px;
+  border-radius: 4px;
+  background: #e4e1d8;
+  overflow: hidden;
+}
+
+.fit-recommendation__bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: #1f5b7a;
+  transition: width 0.3s ease;
+}
+
+.fit-recommendation__bar-pct {
+  color: var(--text);
+  font-size: 13px;
+  text-align: right;
+}
+
+.products-error {
+  color: #8b1e3f;
+  font-size: 15px;
+}
+
 .cart-overlay {
   position: fixed;
   inset: 0;

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Product, ShoeSize } from '../types/shop'
+import { FitRecommendation } from './FitRecommendation'
 
 type ProductDetailProps = {
   product: Product
@@ -80,6 +81,9 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             <h2>Fit information</h2>
             <strong>{product.fit.label}</strong>
             <p>{product.fit.advice}</p>
+            {product.fitFeedback && (
+              <FitRecommendation fitFeedback={product.fitFeedback} />
+            )}
           </div>
 
           <div className="product-detail__panel">
