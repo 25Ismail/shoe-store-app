@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ProductDetail } from './components/ProductDetail'
 import { ProductCard } from './components/ProductCard'
+import { CartPanel } from './components/CartPanel'
 import { products } from './data/products'
 import type { CartItem, Product, ShoeSize } from './types/shop'
 import './App.css'
@@ -8,6 +9,7 @@ import './App.css'
 function App() {
   const [selectedProductId, setSelectedProductId] = useState<Product['id'] | null>(null)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cartOpen, setCartOpen] = useState(false)
 
   const selectedProduct = products.find((p) => p.id === selectedProductId)
 
@@ -37,6 +39,11 @@ function App() {
         },
       ]
     })
+    setCartOpen(true)
+  }
+
+  function removeFromCart(itemId: CartItem['id']) {
+    setCartItems((prev) => prev.filter((item) => item.id !== itemId))
   }
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
@@ -54,6 +61,14 @@ function App() {
   }
 
   return (
+    <>
+      {cartOpen && (
+        <CartPanel
+          items={cartItems}
+          onClose={() => setCartOpen(false)}
+          onRemove={removeFromCart}
+        />
+      )}
     <main className="shop-page">
       <section className="shop-hero">
         <div>
@@ -72,7 +87,7 @@ function App() {
           <h2 id="product-list-title">Shoes</h2>
           <div className="product-section__header-right">
             <span>{products.length} products</span>
-            <button type="button" className="cart-toggle">
+            <button type="button" className="cart-toggle" onClick={() => setCartOpen(true)}>
               Cart {totalItems > 0 && <span className="cart-toggle__count">{totalItems}</span>}
             </button>
           </div>
@@ -89,6 +104,7 @@ function App() {
         </div>
       </section>
     </main>
+    </>
   )
 }
 
