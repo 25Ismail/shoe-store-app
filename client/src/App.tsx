@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { ProductDetail } from './components/ProductDetail'
 import { ProductCard } from './components/ProductCard'
 import { CartPanel } from './components/CartPanel'
+import { AuthForm } from './components/AuthForm'
 import { fetchProducts } from './api/products'
 import type { CartItem, Product, ShoeSize } from './types/shop'
 import './App.css'
@@ -13,6 +14,23 @@ function App() {
   const [selectedProductId, setSelectedProductId] = useState<Product['id'] | null>(null)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(
+    () => localStorage.getItem('userEmail'),
+  )
+
+  function handleAuthSuccess(token: string, email: string) {
+    localStorage.setItem('token', token)
+    localStorage.setItem('userEmail', email)
+    setUserEmail(email)
+    setAuthOpen(false)
+  }
+
+  function handleSignOut() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('userEmail')
+    setUserEmail(null)
+  }
 
   useEffect(() => {
     fetchProducts()
@@ -79,6 +97,9 @@ function App() {
           onRemove={removeFromCart}
         />
       )}
+      {authOpen && (
+        <AuthForm onSuccess={handleAuthSuccess} onClose={() => setAuthOpen(false)} />
+      )}
     <main className="shop-page">
       <section className="shop-hero">
         <div>
@@ -97,6 +118,18 @@ function App() {
           <h2 id="product-list-title">Shoes</h2>
           <div className="product-section__header-right">
             <span>{products.length} products</span>
+            {userEmail ? (
+              <div className="auth-status">
+                <span className="auth-status__email">{userEmail}</span>
+                <button type="button" className="auth-status__signout" onClick={handleSignOut}>
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <button type="button" className="auth-signin-btn" onClick={() => setAuthOpen(true)}>
+                Sign in
+              </button>
+            )}
             <button type="button" className="cart-toggle" onClick={() => setCartOpen(true)}>
               Cart {totalItems > 0 && <span className="cart-toggle__count">{totalItems}</span>}
             </button>

@@ -437,6 +437,46 @@
   font-size: 15px;
 }
 
+.auth-signin-btn {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #5f6f52;
+  border-radius: 6px;
+  background: #fff;
+  color: #5f6f52;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.auth-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-status__email {
+  color: var(--text);
+  font-size: 14px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-status__signout {
+  border: none;
+  background: none;
+  color: #8b1e3f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0;
+  text-decoration: underline;
+}
+
 .auth-overlay {
   position: fixed;
   inset: 0;
