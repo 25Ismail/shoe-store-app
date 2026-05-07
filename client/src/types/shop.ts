@@ -22,6 +22,12 @@ export type SizeGuideRow = {
   footLengthCm: number
 }
 
+export type FitFeedbackEntry = {
+  tooSmall: number
+  trueToSize: number
+  tooLarge: number
+}
+
 export type Product = {
   id: string
   name: string
@@ -34,6 +40,7 @@ export type Product = {
   stockBySize?: Record<ShoeSize, number>
   fit: FitInfo
   sizeGuide: SizeGuideRow[]
+  fitFeedback?: Record<string, FitFeedbackEntry>
 }
 
 export type CartItem = {
