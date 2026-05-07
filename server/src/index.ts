@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import productRoutes from './routes/products'
+import authRoutes from './routes/auth'
 
 dotenv.config()
 
@@ -18,6 +19,7 @@ app.get('/api/health', (_req, res) => {
 })
 
 app.use('/api/products', productRoutes)
+app.use('/api/auth', authRoutes)
 
 mongoose
   .connect(MONGODB_URI)
