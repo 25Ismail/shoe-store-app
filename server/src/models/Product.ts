@@ -87,4 +87,13 @@ const productSchema = new Schema<IProduct>(
   { timestamps: true },
 )
 
+productSchema.set('toJSON', {
+  transform(_doc, ret) {
+    const r = ret as unknown as Record<string, unknown>
+    r.id = (r._id as { toString(): string }).toString()
+    delete r._id
+    delete r.__v
+  },
+})
+
 export const Product = model<IProduct>('Product', productSchema)
