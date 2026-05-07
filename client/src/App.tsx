@@ -1,15 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ProductDetail } from './components/ProductDetail'
 import { ProductCard } from './components/ProductCard'
 import { CartPanel } from './components/CartPanel'
-import { products } from './data/products'
+import { fetchProducts } from './api/products'
 import type { CartItem, Product, ShoeSize } from './types/shop'
 import './App.css'
 
 function App() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [productsLoading, setProductsLoading] = useState(true)
+  const [productsError, setProductsError] = useState<string | null>(null)
   const [selectedProductId, setSelectedProductId] = useState<Product['id'] | null>(null)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
+
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => setProductsError('Kunde inte ladda produkter. Kontrollera att servern körs.'))
+      .finally(() => setProductsLoading(false))
+  }, [])
 
   const selectedProduct = products.find((p) => p.id === selectedProductId)
 
@@ -93,15 +103,19 @@ function App() {
           </div>
         </div>
 
-        <div className="product-grid">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onViewDetails={setSelectedProductId}
-            />
-          ))}
-        </div>
+        {productsLoading && <p>Laddar produkter…</p>}
+        {productsError && <p className="products-error">{productsError}</p>}
+        {!productsLoading && !productsError && (
+          <div className="product-grid">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onViewDetails={setSelectedProductId}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </main>
     </>
