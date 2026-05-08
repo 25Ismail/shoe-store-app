@@ -45,9 +45,11 @@ function pct(value: number, total: number): number {
   return total === 0 ? 0 : Math.round((value / total) * 100)
 }
 
+const MIN_VOTES = 5
+
 function communityRecommendation(stats: Stats): string {
   const { tooSmall, trueToSize, tooLarge, total } = stats
-  if (total === 0) return ''
+  if (total < MIN_VOTES) return ''
   if (trueToSize / total >= 0.6) return 'Most buyers find this shoe true to size.'
   if (tooSmall / total >= 0.5) return 'Most buyers find this shoe runs small — consider sizing up.'
   if (tooLarge / total >= 0.5) return 'Most buyers find this shoe runs large — consider sizing down.'
@@ -134,7 +136,7 @@ export function FitRecommendation({
         </div>
       )}
 
-      {stats.total > 0 && (
+      {stats.total >= MIN_VOTES && (
         <>
           <p className="fit-recommendation__summary">
             Based on {stats.total} buyers — {communityRecommendation(stats)}
