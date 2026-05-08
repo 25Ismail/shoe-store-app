@@ -7,6 +7,7 @@ type CartPanelProps = {
   isLoggedIn: boolean
   onClose: () => void
   onRemove: (itemId: CartItem['id']) => void
+  onUpdateQuantity: (itemId: CartItem['id'], quantity: number) => void
   onOrderSuccess: (orderId: string) => void
   onSignInRequest: () => void
 }
@@ -17,7 +18,7 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function CartPanel({ items, isLoggedIn, onClose, onRemove, onOrderSuccess, onSignInRequest }: CartPanelProps) {
+export function CartPanel({ items, isLoggedIn, onClose, onRemove, onUpdateQuantity, onOrderSuccess, onSignInRequest }: CartPanelProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,7 +47,7 @@ export function CartPanel({ items, isLoggedIn, onClose, onRemove, onOrderSuccess
 
       <aside className="cart-panel" aria-label="Shopping cart">
         <div className="cart-panel__header">
-          <h2>Cart</h2>
+          <h2>Cart ({items.reduce((s, i) => s + i.quantity, 0)})</h2>
           <button type="button" className="cart-panel__close" onClick={onClose} aria-label="Close cart">
             ✕
           </button>
@@ -66,15 +67,41 @@ export function CartPanel({ items, isLoggedIn, onClose, onRemove, onOrderSuccess
                   <div className="cart-item__info">
                     <p className="cart-item__brand">{item.brand}</p>
                     <p className="cart-item__name">{item.name}</p>
-                    <p className="cart-item__meta">
-                      Size {item.selectedSize} &middot; Qty {item.quantity}
-                    </p>
+                    <p className="cart-item__meta">Size {item.selectedSize}</p>
+                    <div className="cart-item__qty">
+                      <button
+                        type="button"
+                        className="cart-item__qty-btn"
+                        onClick={() =>
+                          item.quantity === 1
+                            ? onRemove(item.id)
+                            : onUpdateQuantity(item.id, item.quantity - 1)
+                        }
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+                      <span className="cart-item__qty-count">{item.quantity}</span>
+                      <button
+                        type="button"
+                        className="cart-item__qty-btn"
+                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
 
                   <div className="cart-item__right">
                     <p className="cart-item__price">
                       {priceFormatter.format(item.price * item.quantity)}
                     </p>
+                    {item.quantity > 1 && (
+                      <p className="cart-item__unit-price">
+                        {priceFormatter.format(item.price)} each
+                      </p>
+                    )}
                     <button
                       type="button"
                       className="cart-item__remove"

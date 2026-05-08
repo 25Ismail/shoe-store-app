@@ -83,6 +83,12 @@ function App() {
     setCartItems((prev) => prev.filter((item) => item.id !== itemId))
   }
 
+  function updateQuantity(itemId: CartItem['id'], quantity: number) {
+    setCartItems((prev) =>
+      prev.map((item) => (item.id === itemId ? { ...item, quantity } : item)),
+    )
+  }
+
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   const selectedProduct = products.find((p) => p.id === selectedProductId)
@@ -121,6 +127,7 @@ function App() {
           isLoggedIn={userEmail !== null}
           onClose={() => setCartOpen(false)}
           onRemove={removeFromCart}
+          onUpdateQuantity={updateQuantity}
           onOrderSuccess={(orderId) => {
             setFeedbackItems(cartItems.map((item) => ({
               productId: item.productId,
