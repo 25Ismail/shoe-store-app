@@ -1,9 +1,14 @@
+import { useState } from 'react'
 import type { CartItem } from '../types/shop'
+import { createOrder } from '../api/orders'
 
 type CartPanelProps = {
   items: CartItem[]
+  isLoggedIn: boolean
   onClose: () => void
   onRemove: (itemId: CartItem['id']) => void
+  onOrderSuccess: () => void
+  onSignInRequest: () => void
 }
 
 const priceFormatter = new Intl.NumberFormat('sv-SE', {
@@ -12,8 +17,28 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function CartPanel({ items, onClose, onRemove }: CartPanelProps) {
+export function CartPanel({ items, isLoggedIn, onClose, onRemove, onOrderSuccess, onSignInRequest }: CartPanelProps) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  async function handleCheckout() {
+    if (!isLoggedIn) {
+      onSignInRequest()
+      return
+    }
+    setError(null)
+    setLoading(true)
+    try {
+      await createOrder(items)
+      onOrderSuccess()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Något gick fel')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -68,8 +93,17 @@ export function CartPanel({ items, onClose, onRemove }: CartPanelProps) {
                 <span>Total</span>
                 <span>{priceFormatter.format(total)}</span>
               </div>
-              <button type="button" className="cart-panel__checkout">
-                Go to checkout
+              {!isLoggedIn && (
+                <p className="cart-panel__signin-note">Sign in to complete your purchase.</p>
+              )}
+              {error && <p className="cart-panel__error">{error}</p>}
+              <button
+                type="button"
+                className="cart-panel__checkout"
+                onClick={handleCheckout}
+                disabled={loading}
+              >
+                {loading ? 'Processing…' : isLoggedIn ? 'Go to checkout' : 'Sign in to checkout'}
               </button>
             </div>
           </>

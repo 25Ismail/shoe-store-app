@@ -93,8 +93,11 @@ function App() {
       {cartOpen && (
         <CartPanel
           items={cartItems}
+          isLoggedIn={userEmail !== null}
           onClose={() => setCartOpen(false)}
           onRemove={removeFromCart}
+          onOrderSuccess={() => { setCartItems([]); setCartOpen(false) }}
+          onSignInRequest={() => { setCartOpen(false); setAuthOpen(true) }}
         />
       )}
       {authOpen && (

@@ -742,6 +742,17 @@
   font-weight: 800;
 }
 
+.cart-panel__signin-note {
+  color: var(--text);
+  font-size: 13px;
+  text-align: center;
+}
+
+.cart-panel__error {
+  color: #8b1e3f;
+  font-size: 14px;
+}
+
 .cart-panel__checkout {
   min-height: 46px;
   border: 1px solid #1f5b7a;
