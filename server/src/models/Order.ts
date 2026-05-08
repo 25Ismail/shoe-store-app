@@ -1,5 +1,7 @@
 import { Schema, model, Document, Types } from 'mongoose'
 
+type FitVote = 'tooSmall' | 'trueToSize' | 'tooLarge'
+
 interface OrderItem {
   productId: Types.ObjectId
   name: string
@@ -7,6 +9,7 @@ interface OrderItem {
   selectedSize: number
   quantity: number
   price: number
+  fitVote?: FitVote
 }
 
 export interface IOrder extends Document {
@@ -23,6 +26,7 @@ const orderItemSchema = new Schema<OrderItem>(
     selectedSize: { type: Number, required: true },
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true },
+    fitVote: { type: String, enum: ['tooSmall', 'trueToSize', 'tooLarge'] },
   },
   { _id: false },
 )
