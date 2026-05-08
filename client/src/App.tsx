@@ -166,7 +166,7 @@ function App() {
               <button
                 type="button"
                 className="product-detail__back"
-                onClick={() => setSelectedProductId(null)}
+                onClick={() => { setSelectedProductId(null); window.scrollTo(0, 0) }}
               >
                 ← Back to shoes
               </button>
@@ -208,7 +208,7 @@ function App() {
                     <ProductCard
                       key={product.id}
                       product={product}
-                      onViewDetails={setSelectedProductId}
+                      onViewDetails={(id) => { setSelectedProductId(id); window.scrollTo(0, 0) }}
                     />
                   ))}
                 </div>
