@@ -154,8 +154,8 @@ function App() {
       {authOpen && (
         <AuthForm onSuccess={handleAuthSuccess} onClose={() => setAuthOpen(false)} />
       )}
+      {/* Reload products after feedback so updated fit percentages show straight away */}
       {feedbackItems.length > 0 && (
-        {/* Reload products after feedback so updated fit percentages show straight away */}
         <FeedbackPrompt items={feedbackItems} onDone={() => { setFeedbackItems([]); loadProducts() }} />
       )}
 
