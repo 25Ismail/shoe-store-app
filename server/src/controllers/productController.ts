@@ -37,22 +37,22 @@ export async function submitFitFeedback(req: AuthRequest, res: Response): Promis
     return
   }
 
+  const sizeKey = String(size)
+
   try {
-    const product = await Product.findById(req.params.id)
-    if (!product) {
+    const result = await Product.updateOne(
+      { _id: req.params.id },
+      { $inc: { [`fitFeedback.${sizeKey}.${vote}`]: 1 } },
+    )
+
+    if (result.matchedCount === 0) {
       res.status(404).json({ error: 'Produkt hittades inte' })
       return
     }
 
-    const sizeKey = String(size)
-    const current = product.fitFeedback.get(sizeKey) ?? { tooSmall: 0, trueToSize: 0, tooLarge: 0 }
-    current[vote] += 1
-    product.fitFeedback.set(sizeKey, current)
-    await product.save()
-
     if (orderId) {
       await Order.updateOne(
-        { _id: orderId, userId: req.userId, 'items.productId': product._id, 'items.selectedSize': size },
+        { _id: orderId, userId: req.userId, 'items.productId': req.params.id, 'items.selectedSize': size },
         { $set: { 'items.$.fitVote': vote } },
       )
     }
