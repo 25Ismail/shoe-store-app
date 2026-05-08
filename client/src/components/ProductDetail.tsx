@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import type { Product, ShoeSize } from '../types/shop'
 import { FitRecommendation } from './FitRecommendation'
+import type { MyOrder } from '../api/orders'
+
+type PastPurchase = Pick<MyOrder['items'][number], 'selectedSize' | 'fitVote'>
 
 type ProductDetailProps = {
   product: Product
   onBack: () => void
   onAddToCart: (product: Product, size: ShoeSize) => void
+  pastPurchase?: PastPurchase
 }
 
 const priceFormatter = new Intl.NumberFormat('sv-SE', {
@@ -14,7 +18,7 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailProps) {
+export function ProductDetail({ product, onBack, onAddToCart, pastPurchase }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState<ShoeSize | null>(null)
 
   function handleAddToCart() {
@@ -82,7 +86,10 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             <strong>{product.fit.label}</strong>
             <p>{product.fit.advice}</p>
             {product.fitFeedback && (
-              <FitRecommendation fitFeedback={product.fitFeedback} />
+              <FitRecommendation
+                fitFeedback={product.fitFeedback}
+                pastPurchase={pastPurchase}
+              />
             )}
           </div>
 

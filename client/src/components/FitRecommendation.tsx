@@ -1,7 +1,14 @@
 import type { FitFeedbackEntry } from '../types/shop'
+import type { FitVote } from '../api/orders'
+
+type PastPurchase = {
+  selectedSize: number
+  fitVote?: FitVote
+}
 
 type Props = {
   fitFeedback: Record<string, FitFeedbackEntry>
+  pastPurchase?: PastPurchase
 }
 
 type Stats = {
@@ -25,7 +32,7 @@ function pct(value: number, total: number): number {
   return total === 0 ? 0 : Math.round((value / total) * 100)
 }
 
-function recommendation(stats: Stats): string {
+function communityRecommendation(stats: Stats): string {
   const { tooSmall, trueToSize, tooLarge, total } = stats
   if (total === 0) return ''
   if (trueToSize / total >= 0.6) return 'Most buyers find this shoe true to size.'
@@ -34,10 +41,14 @@ function recommendation(stats: Stats): string {
   return 'Fit varies — check the size guide below.'
 }
 
-export function FitRecommendation({ fitFeedback }: Props) {
-  const stats = aggregate(fitFeedback)
+const voteLabels: Record<FitVote, string> = {
+  tooSmall: 'too small',
+  trueToSize: 'true to size',
+  tooLarge: 'too large',
+}
 
-  if (stats.total === 0) return null
+export function FitRecommendation({ fitFeedback, pastPurchase }: Props) {
+  const stats = aggregate(fitFeedback)
 
   const rows: { label: string; value: number }[] = [
     { label: 'Too small', value: pct(stats.tooSmall, stats.total) },
@@ -47,24 +58,40 @@ export function FitRecommendation({ fitFeedback }: Props) {
 
   return (
     <div className="fit-recommendation">
-      <p className="fit-recommendation__summary">
-        Based on {stats.total} buyers — {recommendation(stats)}
-      </p>
-      <div className="fit-recommendation__bars">
-        {rows.map(({ label, value }) => (
-          <div key={label} className="fit-recommendation__bar-row">
-            <span className="fit-recommendation__bar-label">{label}</span>
-            <div className="fit-recommendation__bar-track">
-              <div
-                className="fit-recommendation__bar-fill"
-                style={{ width: `${value}%` }}
-                aria-label={`${value}%`}
-              />
-            </div>
-            <span className="fit-recommendation__bar-pct">{value}%</span>
+      {pastPurchase && (
+        <div className="fit-recommendation__personal">
+          <strong>Your experience</strong>
+          <p>
+            You previously bought size {pastPurchase.selectedSize}
+            {pastPurchase.fitVote
+              ? ` and rated it ${voteLabels[pastPurchase.fitVote]}.`
+              : ' — no fit rating yet.'}
+          </p>
+        </div>
+      )}
+
+      {stats.total > 0 && (
+        <>
+          <p className="fit-recommendation__summary">
+            Based on {stats.total} buyers — {communityRecommendation(stats)}
+          </p>
+          <div className="fit-recommendation__bars">
+            {rows.map(({ label, value }) => (
+              <div key={label} className="fit-recommendation__bar-row">
+                <span className="fit-recommendation__bar-label">{label}</span>
+                <div className="fit-recommendation__bar-track">
+                  <div
+                    className="fit-recommendation__bar-fill"
+                    style={{ width: `${value}%` }}
+                    aria-label={`${value}%`}
+                  />
+                </div>
+                <span className="fit-recommendation__bar-pct">{value}%</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   )
 }

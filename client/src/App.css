@@ -389,6 +389,25 @@
   background: #f6f3ec;
 }
 
+.fit-recommendation__personal {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #e8f0f5;
+  display: grid;
+  gap: 4px;
+}
+
+.fit-recommendation__personal strong {
+  color: #1f5b7a;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.fit-recommendation__personal p {
+  color: var(--text-h);
+  font-size: 14px;
+}
+
 .fit-recommendation__summary {
   color: var(--text);
   font-size: 14px;

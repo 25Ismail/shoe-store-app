@@ -5,6 +5,7 @@ import { CartPanel } from './components/CartPanel'
 import { AuthForm } from './components/AuthForm'
 import { FeedbackPrompt } from './components/FeedbackPrompt'
 import { fetchProducts } from './api/products'
+import { getMyOrders, type MyOrder } from './api/orders'
 import type { CartItem, Product, ShoeSize } from './types/shop'
 import './App.css'
 
@@ -22,6 +23,12 @@ function App() {
   const [feedbackItems, setFeedbackItems] = useState<
     { productId: string; name: string; brand: string; selectedSize: number; orderId: string }[]
   >([])
+  const [myOrders, setMyOrders] = useState<MyOrder[]>([])
+
+  useEffect(() => {
+    if (userEmail) getMyOrders().then(setMyOrders)
+    else setMyOrders([])
+  }, [userEmail])
 
   function handleAuthSuccess(token: string, email: string) {
     localStorage.setItem('token', token)
@@ -44,6 +51,12 @@ function App() {
   }, [])
 
   const selectedProduct = products.find((p) => p.id === selectedProductId)
+
+  const pastPurchase = selectedProductId
+    ? myOrders
+        .flatMap((o) => o.items.map((item) => ({ ...item, orderId: o._id })))
+        .find((item) => item.productId === selectedProductId)
+    : undefined
 
   function addToCart(product: Product, size: ShoeSize) {
     setCartItems((prev) => {
@@ -87,6 +100,7 @@ function App() {
           product={selectedProduct}
           onBack={() => setSelectedProductId(null)}
           onAddToCart={addToCart}
+          pastPurchase={pastPurchase}
         />
       </main>
     )
