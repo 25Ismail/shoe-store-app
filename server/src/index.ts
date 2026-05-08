@@ -23,6 +23,7 @@ app.use('/api/products', productRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/orders', orderRoutes)
 
+// Connect to the database first, then start the server so requests never arrive before the DB is ready
 mongoose
   .connect(MONGODB_URI)
   .then(() => {

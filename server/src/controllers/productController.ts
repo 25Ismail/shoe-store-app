@@ -40,6 +40,7 @@ export async function submitFitFeedback(req: AuthRequest, res: Response): Promis
   const sizeKey = String(size)
 
   try {
+    // $inc adds 1 to the right vote counter without loading the full document
     const result = await Product.updateOne(
       { _id: req.params.id },
       { $inc: { [`fitFeedback.${sizeKey}.${vote}`]: 1 } },
@@ -51,6 +52,7 @@ export async function submitFitFeedback(req: AuthRequest, res: Response): Promis
     }
 
     if (orderId) {
+      // "items.$" refers to the specific array item matched by the query above
       await Order.updateOne(
         { _id: orderId, userId: req.userId, 'items.productId': req.params.id, 'items.selectedSize': size },
         { $set: { 'items.$.fitVote': vote } },
