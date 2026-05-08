@@ -2,7 +2,6 @@ import type { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/User'
 
-const JWT_SECRET = process.env.JWT_SECRET ?? ''
 const JWT_EXPIRES_IN = '7d'
 
 export async function register(req: Request, res: Response): Promise<void> {
@@ -23,7 +22,7 @@ export async function register(req: Request, res: Response): Promise<void> {
     const user = new User({ email, passwordHash: password })
     await user.save()
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET ?? '', { expiresIn: JWT_EXPIRES_IN })
     res.status(201).json({ token })
   } catch {
     res.status(500).json({ error: 'Registrering misslyckades' })
@@ -45,9 +44,10 @@ export async function login(req: Request, res: Response): Promise<void> {
       return
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET ?? '', { expiresIn: JWT_EXPIRES_IN })
     res.json({ token })
-  } catch {
+  } catch (err) {
+    console.error('Login error:', err)
     res.status(500).json({ error: 'Inloggning misslyckades' })
   }
 }
