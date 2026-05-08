@@ -7,7 +7,6 @@ type PastPurchase = Pick<MyOrder['items'][number], 'selectedSize' | 'fitVote'>
 
 type ProductDetailProps = {
   product: Product
-  onBack: () => void
   onAddToCart: (product: Product, size: ShoeSize) => void
   pastPurchase?: PastPurchase
 }
@@ -18,7 +17,7 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function ProductDetail({ product, onBack, onAddToCart, pastPurchase }: ProductDetailProps) {
+export function ProductDetail({ product, onAddToCart, pastPurchase }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState<ShoeSize | null>(null)
 
   function handleAddToCart() {
@@ -28,10 +27,6 @@ export function ProductDetail({ product, onBack, onAddToCart, pastPurchase }: Pr
 
   return (
     <section className="product-detail" aria-labelledby="product-detail-title">
-      <button type="button" className="product-detail__back" onClick={onBack}>
-        Back to shoes
-      </button>
-
       <div className="product-detail__layout">
         <div className="product-detail__visual" aria-hidden="true">
           <span>{product.brand.slice(0, 1)}</span>

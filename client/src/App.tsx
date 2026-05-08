@@ -30,6 +30,13 @@ function App() {
     else setMyOrders([])
   }, [userEmail])
 
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => setProductsError('Kunde inte ladda produkter. Kontrollera att servern körs.'))
+      .finally(() => setProductsLoading(false))
+  }, [])
+
   function handleAuthSuccess(token: string, email: string) {
     localStorage.setItem('token', token)
     localStorage.setItem('userEmail', email)
@@ -42,21 +49,6 @@ function App() {
     localStorage.removeItem('userEmail')
     setUserEmail(null)
   }
-
-  useEffect(() => {
-    fetchProducts()
-      .then(setProducts)
-      .catch(() => setProductsError('Kunde inte ladda produkter. Kontrollera att servern körs.'))
-      .finally(() => setProductsLoading(false))
-  }, [])
-
-  const selectedProduct = products.find((p) => p.id === selectedProductId)
-
-  const pastPurchase = selectedProductId
-    ? myOrders
-        .flatMap((o) => o.items.map((item) => ({ ...item, orderId: o._id })))
-        .find((item) => item.productId === selectedProductId)
-    : undefined
 
   function addToCart(product: Product, size: ShoeSize) {
     setCartItems((prev) => {
@@ -93,18 +85,33 @@ function App() {
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
-  if (selectedProduct) {
-    return (
-      <main className="shop-page">
-        <ProductDetail
-          product={selectedProduct}
-          onBack={() => setSelectedProductId(null)}
-          onAddToCart={addToCart}
-          pastPurchase={pastPurchase}
-        />
-      </main>
-    )
-  }
+  const selectedProduct = products.find((p) => p.id === selectedProductId)
+
+  const pastPurchase = selectedProductId
+    ? myOrders
+        .flatMap((o) => o.items.map((item) => ({ ...item, orderId: o._id })))
+        .find((item) => item.productId === selectedProductId)
+    : undefined
+
+  const topBarRight = (
+    <div className="top-bar__right">
+      {userEmail ? (
+        <div className="auth-status">
+          <span className="auth-status__email">{userEmail}</span>
+          <button type="button" className="auth-status__signout" onClick={handleSignOut}>
+            Sign out
+          </button>
+        </div>
+      ) : (
+        <button type="button" className="auth-signin-btn" onClick={() => setAuthOpen(true)}>
+          Sign in
+        </button>
+      )}
+      <button type="button" className="cart-toggle" onClick={() => setCartOpen(true)}>
+        Cart {totalItems > 0 && <span className="cart-toggle__count">{totalItems}</span>}
+      </button>
+    </div>
+  )
 
   return (
     <>
@@ -134,57 +141,64 @@ function App() {
       {feedbackItems.length > 0 && (
         <FeedbackPrompt items={feedbackItems} onDone={() => setFeedbackItems([])} />
       )}
-    <main className="shop-page">
-      <section className="shop-hero">
-        <div>
-          <p className="shop-hero__eyebrow">Shoe store</p>
-          <h1>Find the right shoe size before adding to cart</h1>
-        </div>
-        <p>
-          Browse shoes with clear size availability and fit guidance. Product
-          data comes from typed mock data for now and can later move behind the
-          Express API.
-        </p>
-      </section>
 
-      <section className="product-section" aria-labelledby="product-list-title">
-        <div className="product-section__header">
-          <h2 id="product-list-title">Shoes</h2>
-          <div className="product-section__header-right">
-            <span>{products.length} products</span>
-            {userEmail ? (
-              <div className="auth-status">
-                <span className="auth-status__email">{userEmail}</span>
-                <button type="button" className="auth-status__signout" onClick={handleSignOut}>
-                  Sign out
-                </button>
-              </div>
-            ) : (
-              <button type="button" className="auth-signin-btn" onClick={() => setAuthOpen(true)}>
-                Sign in
+      <main className="shop-page">
+        {selectedProduct ? (
+          <>
+            <div className="top-bar">
+              <button
+                type="button"
+                className="product-detail__back"
+                onClick={() => setSelectedProductId(null)}
+              >
+                ← Back to shoes
               </button>
-            )}
-            <button type="button" className="cart-toggle" onClick={() => setCartOpen(true)}>
-              Cart {totalItems > 0 && <span className="cart-toggle__count">{totalItems}</span>}
-            </button>
-          </div>
-        </div>
+              {topBarRight}
+            </div>
+            <ProductDetail
+              product={selectedProduct}
+              onAddToCart={addToCart}
+              pastPurchase={pastPurchase}
+            />
+          </>
+        ) : (
+          <>
+            <section className="shop-hero">
+              <div>
+                <p className="shop-hero__eyebrow">Shoe store</p>
+                <h1>Find the right shoe size before adding to cart</h1>
+              </div>
+              <p>
+                Browse shoes with clear size availability and fit guidance.
+              </p>
+            </section>
 
-        {productsLoading && <p>Laddar produkter…</p>}
-        {productsError && <p className="products-error">{productsError}</p>}
-        {!productsLoading && !productsError && (
-          <div className="product-grid">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetails={setSelectedProductId}
-              />
-            ))}
-          </div>
+            <section className="product-section" aria-labelledby="product-list-title">
+              <div className="product-section__header">
+                <h2 id="product-list-title">Shoes</h2>
+                <div className="product-section__header-right">
+                  <span>{products.length} products</span>
+                  {topBarRight}
+                </div>
+              </div>
+
+              {productsLoading && <p>Laddar produkter…</p>}
+              {productsError && <p className="products-error">{productsError}</p>}
+              {!productsLoading && !productsError && (
+                <div className="product-grid">
+                  {products.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onViewDetails={setSelectedProductId}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
         )}
-      </section>
-    </main>
+      </main>
     </>
   )
 }

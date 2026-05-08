@@ -328,8 +328,26 @@
 }
 
 /* ── Product detail ── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.top-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .product-detail {
-  padding: 24px 0 56px;
+  padding: 0 0 56px;
   text-align: left;
 }
 
