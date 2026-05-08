@@ -181,6 +181,7 @@ const products = [
 
 async function seed() {
   await mongoose.connect(process.env.MONGODB_URI ?? '')
+  // Wipe existing products first so running seed twice doesn't create duplicates
   await Product.deleteMany({})
   await Product.insertMany(products)
   console.log('Seedad 6 produkter')
