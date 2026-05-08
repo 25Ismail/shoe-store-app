@@ -30,12 +30,14 @@ function App() {
     else setMyOrders([])
   }, [userEmail])
 
-  useEffect(() => {
+  function loadProducts() {
     fetchProducts()
       .then(setProducts)
       .catch(() => setProductsError('Kunde inte ladda produkter. Kontrollera att servern körs.'))
       .finally(() => setProductsLoading(false))
-  }, [])
+  }
+
+  useEffect(() => { loadProducts() }, [])
 
   function handleAuthSuccess(token: string, email: string) {
     localStorage.setItem('token', token)
@@ -150,7 +152,7 @@ function App() {
         <AuthForm onSuccess={handleAuthSuccess} onClose={() => setAuthOpen(false)} />
       )}
       {feedbackItems.length > 0 && (
-        <FeedbackPrompt items={feedbackItems} onDone={() => setFeedbackItems([])} />
+        <FeedbackPrompt items={feedbackItems} onDone={() => { setFeedbackItems([]); loadProducts() }} />
       )}
 
       <main className="shop-page">
@@ -177,8 +179,8 @@ function App() {
           <>
             <section className="shop-hero">
               <div>
-                <p className="shop-hero__eyebrow">Shoe store</p>
-                <h1>Find the right shoe size before adding to cart</h1>
+                <p className="shop-hero__eyebrow">Confidency Store</p>
+                <h1>Size Confidency, before checkout.</h1>
               </div>
               <p>
                 Browse shoes with clear size availability and fit guidance.
