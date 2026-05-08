@@ -6,22 +6,10 @@ type PastPurchase = {
   fitVote?: FitVote
 }
 
-type HistoryItem = {
-  productId?: string
-  category?: string
-  fitLabel?: string
-  fitVote?: FitVote
-  selectedSize?: number
-}
-
 type Props = {
   fitFeedback: Record<string, FitFeedbackEntry>
   pastPurchase?: PastPurchase
-  orderHistory?: HistoryItem[]
-  currentProductId?: string
-  currentCategory?: string
-  currentFitLabel?: string
-  availableSizes?: number[]
+  suggestedSize?: number
 }
 
 type Stats = {
@@ -62,52 +50,8 @@ const voteLabels: Record<FitVote, string> = {
   tooLarge: 'too large',
 }
 
-function crossShoeAdvice(
-  history: HistoryItem[],
-  currentProductId: string,
-  currentCategory: string,
-  currentFitLabel: string,
-  availableSizes: number[],
-): string {
-  const relevant = history.filter(
-    (item) =>
-      item.productId !== currentProductId &&
-      item.fitVote !== undefined &&
-      item.selectedSize !== undefined &&
-      (item.category === currentCategory || item.fitLabel === currentFitLabel),
-  )
-  if (relevant.length < 2) return ''
-
-  const trueSizes = relevant.map((item) => {
-    const base = item.selectedSize!
-    if (item.fitVote === 'tooSmall') return base + 1
-    if (item.fitVote === 'tooLarge') return base - 1
-    return base
-  })
-
-  const avg = trueSizes.reduce((a, b) => a + b, 0) / trueSizes.length
-  const suggested = availableSizes.reduce((closest, size) =>
-    Math.abs(size - avg) < Math.abs(closest - avg) ? size : closest,
-  )
-
-  return `Based on your history with similar shoes, we suggest size ${suggested} for you.`
-}
-
-export function FitRecommendation({
-  fitFeedback,
-  pastPurchase,
-  orderHistory,
-  currentProductId,
-  currentCategory,
-  currentFitLabel,
-  availableSizes,
-}: Props) {
+export function FitRecommendation({ fitFeedback, pastPurchase, suggestedSize }: Props) {
   const stats = aggregate(fitFeedback)
-
-  const crossAdvice =
-    orderHistory && currentProductId && currentCategory && currentFitLabel && availableSizes?.length
-      ? crossShoeAdvice(orderHistory, currentProductId, currentCategory, currentFitLabel, availableSizes)
-      : ''
 
   const rows: { label: string; value: number }[] = [
     { label: 'Too small', value: pct(stats.tooSmall, stats.total) },
@@ -129,10 +73,10 @@ export function FitRecommendation({
         </div>
       )}
 
-      {crossAdvice && (
+      {suggestedSize && (
         <div className="fit-recommendation__personal">
           <strong>Based on your history</strong>
-          <p>{crossAdvice}</p>
+          <p>Based on your history with similar shoes, we suggest size {suggestedSize} for you.</p>
         </div>
       )}
 
