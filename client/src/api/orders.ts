@@ -25,6 +25,7 @@ export async function getMyOrders(): Promise<MyOrder[]> {
   const res = await fetch(`${API_URL}/api/orders/me`, {
     headers: { Authorization: `Bearer ${token ?? ''}` },
   })
+  // Return empty list instead of throwing — user may simply not be logged in
   if (!res.ok) return []
   return res.json() as Promise<MyOrder[]>
 }
