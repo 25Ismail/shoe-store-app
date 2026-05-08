@@ -63,8 +63,8 @@ export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory
   return (
     <section className="product-detail" aria-labelledby="product-detail-title">
       <div className="product-detail__layout">
-        <div className="product-detail__visual" aria-hidden="true">
-          <span>{product.brand.slice(0, 1)}</span>
+        <div className="product-detail__visual">
+          <img src={product.imageUrl} alt={product.name} />
         </div>
 
         <div className="product-detail__content">

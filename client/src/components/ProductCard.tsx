@@ -14,8 +14,8 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
 export function ProductCard({ product, onViewDetails }: ProductCardProps) {
   return (
     <article className="product-card">
-      <div className="product-card__visual" aria-hidden="true">
-        <span>{product.brand.slice(0, 1)}</span>
+      <div className="product-card__visual">
+        <img src={product.imageUrl} alt={product.name} />
       </div>
 
       <div className="product-card__content">
