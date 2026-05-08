@@ -33,11 +33,13 @@ function pct(value: number, total: number): number {
   return total === 0 ? 0 : Math.round((value / total) * 100)
 }
 
+// Require at least 5 votes so one person can't skew the result
 const MIN_VOTES = 5
 
 function communityRecommendation(stats: Stats): string {
   const { tooSmall, trueToSize, tooLarge, total } = stats
   if (total < MIN_VOTES) return ''
+  // Show a clear message only when a clear majority agrees (60% for true-to-size, 50%+ for small/large)
   if (trueToSize / total >= 0.6) return 'Most buyers find this shoe true to size.'
   if (tooSmall / total >= 0.5) return 'Most buyers find this shoe runs small — consider sizing up.'
   if (tooLarge / total >= 0.5) return 'Most buyers find this shoe runs large — consider sizing down.'

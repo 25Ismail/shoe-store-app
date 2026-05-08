@@ -97,12 +97,15 @@ function App() {
 
   const selectedProduct = products.find((p) => p.id === selectedProductId)
 
+  // Flatten all orders into a single list and attach the order ID to each item
   const allOrderItems = myOrders.flatMap((o) => o.items.map((item) => ({ ...item, orderId: o._id })))
 
+  // The user's own purchase of the currently viewed shoe (used to show their personal fit rating)
   const pastPurchase = selectedProductId
     ? allOrderItems.find((item) => item.productId === selectedProductId)
     : undefined
 
+  // All other past purchases — used to suggest a size for the current shoe based on similar shoes
   const orderHistory = allOrderItems.filter((item) => item.productId !== selectedProductId)
 
   const topBarRight = (
@@ -152,6 +155,7 @@ function App() {
         <AuthForm onSuccess={handleAuthSuccess} onClose={() => setAuthOpen(false)} />
       )}
       {feedbackItems.length > 0 && (
+        {/* Reload products after feedback so updated fit percentages show straight away */}
         <FeedbackPrompt items={feedbackItems} onDone={() => { setFeedbackItems([]); loadProducts() }} />
       )}
 

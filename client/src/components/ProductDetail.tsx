@@ -23,6 +23,7 @@ function getSuggestedSize(
   history: OrderHistoryItem[],
   product: Product,
 ): number | null {
+  // Only look at other shoes with the same category or fit label, and only if the user rated them
   const relevant = history.filter(
     (item) =>
       item.productId !== product.id &&
@@ -32,6 +33,7 @@ function getSuggestedSize(
   )
   if (relevant.length < 2) return null
 
+  // Shift the size up by 1 if they said too small, down by 1 if too large, otherwise keep as-is
   const avg =
     relevant.reduce((sum, item) => {
       const base = item.selectedSize!
@@ -40,6 +42,7 @@ function getSuggestedSize(
       return sum + base
     }, 0) / relevant.length
 
+  // Pick the available size closest to the calculated average
   return product.availableSizes.reduce((closest, size) =>
     Math.abs(size - avg) < Math.abs(closest - avg) ? size : closest,
   )

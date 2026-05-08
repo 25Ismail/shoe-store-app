@@ -69,6 +69,7 @@ export function CartPanel({ items, isLoggedIn, onClose, onRemove, onUpdateQuanti
                     <p className="cart-item__name">{item.name}</p>
                     <p className="cart-item__meta">Size {item.selectedSize}</p>
                     <div className="cart-item__qty">
+                      {/* Pressing minus when quantity is 1 removes the item entirely */}
                       <button
                         type="button"
                         className="cart-item__qty-btn"
