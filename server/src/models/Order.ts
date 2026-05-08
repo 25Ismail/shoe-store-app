@@ -20,6 +20,7 @@ export interface IOrder extends Document {
   createdAt: Date
 }
 
+// { _id: false } means each item in the array won't get its own database ID
 const orderItemSchema = new Schema<OrderItem>(
   {
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },

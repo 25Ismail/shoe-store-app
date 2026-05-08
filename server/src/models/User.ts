@@ -15,7 +15,7 @@ const userSchema = new Schema<IUser>(
   { timestamps: true },
 )
 
-// Hasha lösenordet innan sparning om det har ändrats
+// Hash the password before saving. The check prevents double-hashing if we save again later.
 userSchema.pre('save', async function () {
   if (!this.isModified('passwordHash')) return
   this.passwordHash = await bcrypt.hash(this.passwordHash, 10)

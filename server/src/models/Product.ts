@@ -3,7 +3,7 @@ import { Schema, model, Document } from 'mongoose'
 type FitType = 'true-to-size' | 'runs-small' | 'runs-large' | 'narrow-fit' | 'wide-fit'
 type ShoeCategory = 'running' | 'sneakers' | 'boots' | 'training'
 
-// Aggregerad passformsfeedback per storlek, insamlad från köpare
+// Fit feedback counts per size, collected from buyers
 interface FitFeedback {
   tooSmall: number
   trueToSize: number
@@ -33,7 +33,7 @@ export interface IProduct extends Document {
   fitFeedback: Map<string, FitFeedback>
 }
 
-// Subsschema för fit – eget Schema krävs eftersom fältet heter "type"
+// Mongoose treats a field literally named "type" as special, so we need a sub-schema here
 const fitSchema = new Schema(
   {
     type: {
@@ -87,6 +87,7 @@ const productSchema = new Schema<IProduct>(
   { timestamps: true },
 )
 
+// Clean up MongoDB internal fields before the object is sent to the client
 productSchema.set('toJSON', {
   transform(_doc, ret) {
     const r = ret as unknown as Record<string, unknown>
