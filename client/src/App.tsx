@@ -95,11 +95,13 @@ function App() {
 
   const selectedProduct = products.find((p) => p.id === selectedProductId)
 
+  const allOrderItems = myOrders.flatMap((o) => o.items.map((item) => ({ ...item, orderId: o._id })))
+
   const pastPurchase = selectedProductId
-    ? myOrders
-        .flatMap((o) => o.items.map((item) => ({ ...item, orderId: o._id })))
-        .find((item) => item.productId === selectedProductId)
+    ? allOrderItems.find((item) => item.productId === selectedProductId)
     : undefined
+
+  const orderHistory = allOrderItems.filter((item) => item.productId !== selectedProductId)
 
   const topBarRight = (
     <div className="top-bar__right">
@@ -168,6 +170,7 @@ function App() {
               product={selectedProduct}
               onAddToCart={addToCart}
               pastPurchase={pastPurchase}
+              orderHistory={orderHistory}
             />
           </>
         ) : (

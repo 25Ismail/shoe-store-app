@@ -4,11 +4,13 @@ import { FitRecommendation } from './FitRecommendation'
 import type { MyOrder } from '../api/orders'
 
 type PastPurchase = Pick<MyOrder['items'][number], 'selectedSize' | 'fitVote'>
+type OrderHistoryItem = Pick<MyOrder['items'][number], 'productId' | 'category' | 'fitLabel' | 'fitVote' | 'selectedSize'>
 
 type ProductDetailProps = {
   product: Product
   onAddToCart: (product: Product, size: ShoeSize) => void
   pastPurchase?: PastPurchase
+  orderHistory?: OrderHistoryItem[]
 }
 
 const priceFormatter = new Intl.NumberFormat('sv-SE', {
@@ -17,7 +19,7 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
-export function ProductDetail({ product, onAddToCart, pastPurchase }: ProductDetailProps) {
+export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState<ShoeSize | null>(null)
 
   function handleAddToCart() {
@@ -84,6 +86,11 @@ export function ProductDetail({ product, onAddToCart, pastPurchase }: ProductDet
               <FitRecommendation
                 fitFeedback={product.fitFeedback}
                 pastPurchase={pastPurchase}
+                orderHistory={orderHistory}
+                currentProductId={product.id}
+                currentCategory={product.category}
+                currentFitLabel={product.fit.label}
+                availableSizes={product.availableSizes}
               />
             )}
           </div>
