@@ -477,6 +477,74 @@
   text-decoration: underline;
 }
 
+.feedback-prompt {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: min(420px, calc(100% - 32px));
+  display: grid;
+  gap: 16px;
+  padding: 28px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  z-index: 201;
+}
+
+.feedback-prompt__step {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.feedback-prompt h2 {
+  font-size: 18px;
+}
+
+.feedback-prompt__sub {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.feedback-prompt__votes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.feedback-prompt__vote-btn {
+  min-height: 46px;
+  border: 1px solid #1f5b7a;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f5b7a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.feedback-prompt__vote-btn:hover {
+  background: #1f5b7a;
+  color: #fff;
+}
+
+.feedback-prompt__vote-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.feedback-prompt__skip {
+  border: none;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
 .auth-overlay {
   position: fixed;
   inset: 0;

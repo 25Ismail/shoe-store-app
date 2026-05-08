@@ -7,7 +7,7 @@ type CartPanelProps = {
   isLoggedIn: boolean
   onClose: () => void
   onRemove: (itemId: CartItem['id']) => void
-  onOrderSuccess: () => void
+  onOrderSuccess: (orderId: string) => void
   onSignInRequest: () => void
 }
 
@@ -31,8 +31,8 @@ export function CartPanel({ items, isLoggedIn, onClose, onRemove, onOrderSuccess
     setError(null)
     setLoading(true)
     try {
-      await createOrder(items)
-      onOrderSuccess()
+      const { _id } = await createOrder(items)
+      onOrderSuccess(_id)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Något gick fel')
     } finally {

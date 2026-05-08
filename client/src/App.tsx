@@ -3,6 +3,7 @@ import { ProductDetail } from './components/ProductDetail'
 import { ProductCard } from './components/ProductCard'
 import { CartPanel } from './components/CartPanel'
 import { AuthForm } from './components/AuthForm'
+import { FeedbackPrompt } from './components/FeedbackPrompt'
 import { fetchProducts } from './api/products'
 import type { CartItem, Product, ShoeSize } from './types/shop'
 import './App.css'
@@ -18,6 +19,9 @@ function App() {
   const [userEmail, setUserEmail] = useState<string | null>(
     () => localStorage.getItem('userEmail'),
   )
+  const [feedbackItems, setFeedbackItems] = useState<
+    { productId: string; name: string; brand: string; selectedSize: number; orderId: string }[]
+  >([])
 
   function handleAuthSuccess(token: string, email: string) {
     localStorage.setItem('token', token)
@@ -96,12 +100,25 @@ function App() {
           isLoggedIn={userEmail !== null}
           onClose={() => setCartOpen(false)}
           onRemove={removeFromCart}
-          onOrderSuccess={() => { setCartItems([]); setCartOpen(false) }}
+          onOrderSuccess={(orderId) => {
+            setFeedbackItems(cartItems.map((item) => ({
+              productId: item.productId,
+              name: item.name,
+              brand: item.brand,
+              selectedSize: item.selectedSize,
+              orderId,
+            })))
+            setCartItems([])
+            setCartOpen(false)
+          }}
           onSignInRequest={() => { setCartOpen(false); setAuthOpen(true) }}
         />
       )}
       {authOpen && (
         <AuthForm onSuccess={handleAuthSuccess} onClose={() => setAuthOpen(false)} />
+      )}
+      {feedbackItems.length > 0 && (
+        <FeedbackPrompt items={feedbackItems} onDone={() => setFeedbackItems([])} />
       )}
     <main className="shop-page">
       <section className="shop-hero">
