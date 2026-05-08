@@ -7,6 +7,8 @@ interface OrderItemInput {
   productId: string
   name: string
   brand: string
+  category?: string
+  fitLabel?: string
   selectedSize: number
   quantity: number
   price: number
@@ -27,6 +29,8 @@ export async function createOrder(req: AuthRequest, res: Response): Promise<void
         productId: new Types.ObjectId(item.productId),
         name: item.name,
         brand: item.brand,
+        category: item.category,
+        fitLabel: item.fitLabel,
         selectedSize: item.selectedSize,
         quantity: item.quantity,
         price: item.price,

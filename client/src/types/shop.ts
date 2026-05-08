@@ -49,6 +49,8 @@ export type CartItem = {
   name: Product['name']
   brand: Product['brand']
   imageUrl: Product['imageUrl']
+  category: Product['category']
+  fitLabel: Product['fit']['label']
   selectedSize: ShoeSize
   quantity: number
   price: Product['price']

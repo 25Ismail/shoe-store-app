@@ -6,6 +6,8 @@ interface OrderItem {
   productId: Types.ObjectId
   name: string
   brand: string
+  category?: string
+  fitLabel?: string
   selectedSize: number
   quantity: number
   price: number
@@ -23,6 +25,8 @@ const orderItemSchema = new Schema<OrderItem>(
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     name: { type: String, required: true },
     brand: { type: String, required: true },
+    category: { type: String },
+    fitLabel: { type: String },
     selectedSize: { type: Number, required: true },
     quantity: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true },

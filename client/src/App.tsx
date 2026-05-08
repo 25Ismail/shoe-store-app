@@ -70,6 +70,8 @@ function App() {
           name: product.name,
           brand: product.brand,
           imageUrl: product.imageUrl,
+          category: product.category,
+          fitLabel: product.fit.label,
           selectedSize: size,
           quantity: 1,
           price: product.price,
