@@ -19,8 +19,38 @@ const priceFormatter = new Intl.NumberFormat('sv-SE', {
   maximumFractionDigits: 0,
 })
 
+function getSuggestedSize(
+  history: OrderHistoryItem[],
+  product: Product,
+): number | null {
+  const relevant = history.filter(
+    (item) =>
+      item.productId !== product.id &&
+      item.fitVote !== undefined &&
+      item.selectedSize !== undefined &&
+      (item.category === product.category || item.fitLabel === product.fit.label),
+  )
+  if (relevant.length < 2) return null
+
+  const avg =
+    relevant.reduce((sum, item) => {
+      const base = item.selectedSize!
+      if (item.fitVote === 'tooSmall') return sum + base + 1
+      if (item.fitVote === 'tooLarge') return sum + base - 1
+      return sum + base
+    }, 0) / relevant.length
+
+  return product.availableSizes.reduce((closest, size) =>
+    Math.abs(size - avg) < Math.abs(closest - avg) ? size : closest,
+  )
+}
+
 export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory }: ProductDetailProps) {
   const [selectedSize, setSelectedSize] = useState<ShoeSize | null>(null)
+
+  const suggestedSize = orderHistory ? getSuggestedSize(orderHistory, product) : null
+
+  const fitReminder = selectedSize !== null ? product.fit.advice : null
 
   function handleAddToCart() {
     if (selectedSize === null) return
@@ -44,6 +74,14 @@ export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory
 
           <div className="product-detail__panel">
             <h2>Available sizes</h2>
+            {suggestedSize && (
+              <p className="product-detail__size-hint">
+                Based on your purchase history with similar shoes, we suggest size {suggestedSize}.
+                {selectedSize && selectedSize !== suggestedSize
+                  ? ` You picked ${selectedSize} — consider sizing to ${suggestedSize} instead.`
+                  : ' Choose one size larger than your usual size.'}
+              </p>
+            )}
             <div
               className="product-detail__sizes"
               aria-label={`Available sizes for ${product.name}`}
@@ -53,13 +91,18 @@ export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory
                 const isSoldOut = stock === 0
                 const isSelected = selectedSize === size
 
+                const isSuggested = suggestedSize === size
+
                 return (
                   <button
                     key={size}
                     type="button"
                     disabled={isSoldOut}
                     aria-pressed={isSelected}
-                    className={isSelected ? 'is-selected' : undefined}
+                    className={[
+                      isSelected ? 'is-selected' : undefined,
+                      isSuggested && !isSelected ? 'is-suggested' : undefined,
+                    ].filter(Boolean).join(' ') || undefined}
                     onClick={() => setSelectedSize(size)}
                   >
                     {size}
@@ -67,6 +110,10 @@ export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory
                 )
               })}
             </div>
+
+            {fitReminder && (
+              <p className="product-detail__size-hint">{fitReminder}</p>
+            )}
 
             <button
               type="button"
@@ -86,11 +133,7 @@ export function ProductDetail({ product, onAddToCart, pastPurchase, orderHistory
               <FitRecommendation
                 fitFeedback={product.fitFeedback}
                 pastPurchase={pastPurchase}
-                orderHistory={orderHistory}
-                currentProductId={product.id}
-                currentCategory={product.category}
-                currentFitLabel={product.fit.label}
-                availableSizes={product.availableSizes}
+                suggestedSize={suggestedSize ?? undefined}
               />
             )}
           </div>
