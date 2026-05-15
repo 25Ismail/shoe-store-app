@@ -31,17 +31,21 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
           <span>{product.fit.advice}</span>
         </div>
 
-        <div className="product-card__sizes" aria-label={`Sizes for ${product.name}`}>
-          {product.availableSizes.map((size) => {
-            const stock = product.stockBySize?.[size]
-            const isSoldOut = stock === 0
+        <div className="product-card__sizes">
+          <span className="product-card__sizes-label">Sizes in stock</span>
+          <div className="product-card__sizes-grid" aria-label={`Sizes for ${product.name}`}>
+            {product.availableSizes.map((size) => {
+              const stock = product.stockBySize?.[size]
+              const isSoldOut = stock === 0
+              if (isSoldOut) return null
 
-            return (
-              <button key={size} type="button" disabled={isSoldOut}>
-                {size}
-              </button>
-            )
-          })}
+              return (
+                <button key={size} type="button">
+                  {size}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         <div className="product-card__footer">
@@ -54,7 +58,7 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
           className="product-card__details"
           onClick={() => onViewDetails(product.id)}
         >
-          View details
+          Select size
         </button>
       </div>
     </article>

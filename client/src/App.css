@@ -256,6 +256,21 @@
 
 .product-card__sizes {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-card__sizes-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.product-card__sizes-grid {
+  display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
@@ -267,22 +282,10 @@
   border-radius: 6px;
   background: var(--surface);
   color: var(--text-h);
-  cursor: pointer;
+  cursor: default;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
-  transition: border-color 0.15s;
-}
-
-.product-card__sizes button:hover:not(:disabled) {
-  border-color: var(--accent);
-}
-
-.product-card__sizes button:disabled {
-  color: var(--text);
-  cursor: not-allowed;
-  text-decoration: line-through;
-  opacity: 0.45;
 }
 
 .product-card__footer {
